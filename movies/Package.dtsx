@@ -11,8 +11,8 @@
   DTS:LocaleID="1033"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="26"
-  DTS:VersionGUID="{7AF306FB-C7EA-405E-9616-29484154B5FC}">
+  DTS:VersionBuild="35"
+  DTS:VersionGUID="{0E3DC2F0-6524-4A31-9D32-B304FC8617B0}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -197,6 +197,12 @@
                       cachedDataType="date"
                       cachedName="Release Date"
                       lineageId="Package\Data Flow Task\Excel Source.Outputs[Excel Source Output].Columns[Release Date]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Derived Column.Inputs[Derived Column Input].Columns[Genre]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Genre"
+                      lineageId="Package\Data Flow Task\Excel Source.Outputs[Excel Source Output].Columns[Genre]" />
                   </inputColumns>
                   <externalMetadataColumns />
                 </input>
@@ -229,6 +235,29 @@
                           description="Derived Column Friendly Expression"
                           expressionType="Notify"
                           name="FriendlyExpression">(DT_DBDATE)[Release Date]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[cleanedgenre]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[cleanedgenre]"
+                      name="cleanedgenre"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[REPLACE]([REPLACE]([REPLACE](#{Package\Data Flow Task\Excel Source.Outputs[Excel Source Output].Columns[Genre]},"[",""),"]",""),"'","")</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">REPLACE(REPLACE(REPLACE(Genre,"[",""),"]",""),"'","")</property>
                       </properties>
                     </outputColumn>
                   </outputColumns>
@@ -673,13 +702,6 @@
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[World Sales (in $)]"
                       lineageId="Package\Data Flow Task\Excel Source.Outputs[Excel Source Output].Columns[World Sales (in $)]" />
                     <inputColumn
-                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Genre]"
-                      cachedDataType="wstr"
-                      cachedLength="255"
-                      cachedName="Genre"
-                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Genre]"
-                      lineageId="Package\Data Flow Task\Excel Source.Outputs[Excel Source Output].Columns[Genre]" />
-                    <inputColumn
                       refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Movie Runtime]"
                       cachedDataType="wstr"
                       cachedLength="255"
@@ -699,6 +721,13 @@
                       cachedName="test date"
                       externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Release Date]"
                       lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[test date]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[cleanedgenre]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="cleanedgenre"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Genre]"
+                      lineageId="Package\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[cleanedgenre]" />
                   </inputColumns>
                   <externalMetadataColumns
                     isUsed="True">
@@ -803,6 +832,688 @@
       </DTS:ObjectData>
     </DTS:Executable>
     <DTS:Executable
+      DTS:refId="Package\DimensionDistributor"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{51DD1A2D-665C-42D9-9F68-5A89B1DCEE0B}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DimensionDistributor"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\DimensionDistributor\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[DistributorDimension]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DimensionDistributor\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Distributor]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Distributor"
+                      externalMetadataColumnId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Distributor]"
+                      lineageId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].Columns[Distributor]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DistributorID]"
+                      dataType="i4"
+                      name="DistributorID" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Distributor]"
+                      dataType="wstr"
+                      length="255"
+                      name="Distributor" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DimensionDistributor\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DimensionDistributor\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DimensionDistributor\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DimensionDistributor\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[CleanMovies]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DimensionDistributor\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].Columns[Distributor]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Distributor]"
+                      length="255"
+                      lineageId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].Columns[Distributor]"
+                      name="Distributor"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[F1]"
+                      dataType="r8"
+                      name="F1" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Title]"
+                      dataType="wstr"
+                      length="255"
+                      name="Title" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Movie Info]"
+                      dataType="wstr"
+                      length="255"
+                      name="Movie Info" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Distributor]"
+                      dataType="wstr"
+                      length="255"
+                      name="Distributor" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Release Date]"
+                      dataType="wstr"
+                      length="10"
+                      name="Release Date" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Domestic Sales (in $)]"
+                      dataType="r8"
+                      name="Domestic Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[International Sales (in $)]"
+                      dataType="r8"
+                      name="International Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[World Sales (in $)]"
+                      dataType="r8"
+                      name="World Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Genre]"
+                      dataType="wstr"
+                      length="255"
+                      name="Genre" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Movie Runtime]"
+                      dataType="wstr"
+                      length="255"
+                      name="Movie Runtime" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[License]"
+                      dataType="wstr"
+                      length="255"
+                      name="License" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Distributor]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Distributor]"
+                      name="Distributor" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DimensionDistributor.Paths[OLE DB Source Output]"
+              endId="Package\DimensionDistributor\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\DimensionDistributor\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\DimensionMovie"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{F276B509-E35A-4FE6-8B83-5ED89FF24148}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="DimensionMovie"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\DimensionMovie\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[MoviesDimension]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DimensionMovie\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Title]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Title"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Title]"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Title]" />
+                    <inputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Genre]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Genre"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Genre]"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Genre]" />
+                    <inputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Movie Runtime]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Movie Runtime"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Movie Runtime]"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Movie Runtime]" />
+                    <inputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[License]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="License"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[License]"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[License]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Title]"
+                      dataType="wstr"
+                      length="255"
+                      name="Title" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Genre]"
+                      dataType="wstr"
+                      length="255"
+                      name="Genre" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Movie Runtime]"
+                      dataType="wstr"
+                      length="255"
+                      name="Movie Runtime" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[License]"
+                      dataType="wstr"
+                      length="255"
+                      name="License" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Movie_ID]"
+                      dataType="i4"
+                      name="Movie_ID" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\DimensionMovie\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DimensionMovie\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DimensionMovie\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\DimensionMovie\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[CleanMovies]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\DimensionMovie\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  connectionManagerRefId="Package.ConnectionManagers[DESKTOP-FH7DGLB.entrepotdb]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Title]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Title]"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Title]"
+                      name="Title"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Genre]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Genre]"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Genre]"
+                      name="Genre"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Movie Runtime]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Movie Runtime]"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[Movie Runtime]"
+                      name="Movie Runtime"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[License]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[License]"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].Columns[License]"
+                      name="License"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[F1]"
+                      dataType="r8"
+                      name="F1" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Title]"
+                      dataType="wstr"
+                      length="255"
+                      name="Title" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Movie Info]"
+                      dataType="wstr"
+                      length="255"
+                      name="Movie Info" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Distributor]"
+                      dataType="wstr"
+                      length="255"
+                      name="Distributor" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Release Date]"
+                      dataType="wstr"
+                      length="10"
+                      name="Release Date" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Domestic Sales (in $)]"
+                      dataType="r8"
+                      name="Domestic Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[International Sales (in $)]"
+                      dataType="r8"
+                      name="International Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[World Sales (in $)]"
+                      dataType="r8"
+                      name="World Sales (in $)" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Genre]"
+                      dataType="wstr"
+                      length="255"
+                      name="Genre" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Movie Runtime]"
+                      dataType="wstr"
+                      length="255"
+                      name="Movie Runtime" />
+                    <externalMetadataColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[License]"
+                      dataType="wstr"
+                      length="255"
+                      name="License" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Title]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Title]"
+                      name="Title" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Genre]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Genre]"
+                      name="Genre" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Movie Runtime]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Movie Runtime]"
+                      name="Movie Runtime" />
+                    <outputColumn
+                      refId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[License]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[License]"
+                      name="License" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\DimensionMovie.Paths[OLE DB Source Output]"
+              endId="Package\DimensionMovie\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\DimensionMovie\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
       DTS:refId="Package\Execute SQL Task"
       DTS:CreationName="Microsoft.ExecuteSQLTask"
       DTS:Description="Execute SQL Task"
@@ -829,6 +1540,22 @@
       DTS:LogicalAnd="True"
       DTS:ObjectName="Constraint"
       DTS:To="Package\Data Flow Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{6D50CF93-0832-42EB-8EA1-E06BA2B590DD}"
+      DTS:From="Package\DimensionDistributor"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Data Flow Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{0ADBA000-B3FF-4B1A-ACFB-A9DBCA3F265E}"
+      DTS:From="Package\Data Flow Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\DimensionMovie" />
   </DTS:PrecedenceConstraints>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -841,41 +1568,117 @@
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="155,42"
           Id="Package\Data Flow Task"
-          TopLeft="494.5,118.5" />
+          TopLeft="501.5,59.5" />
         <NodeLayout
           Size="170,42"
           Id="Package\Execute SQL Task"
-          TopLeft="516,310" />
+          TopLeft="836,339" />
         <EdgeLayout
           Id="Package.PrecedenceConstraints[Constraint]"
-          TopLeft="601,310">
+          TopLeft="921,339">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="-29,-149.5"
+              EndConnector="-317.5,-237.5"
               Start="0,0"
-              End="-29,-142">
+              End="-317.5,-230">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="0,-70.75" />
+                    End="0,-137.044061302682" />
                   <mssgle:CubicBezierSegment
-                    Point1="0,-70.75"
-                    Point2="0,-74.75"
-                    Point3="-4,-74.75" />
+                    Point1="0,-137.044061302682"
+                    Point2="0,-141.044061302682"
+                    Point3="-4,-141.044061302682" />
                   <mssgle:LineSegment
-                    End="-25,-74.75" />
+                    End="-313.5,-141.044061302682" />
                   <mssgle:CubicBezierSegment
-                    Point1="-25,-74.75"
-                    Point2="-29,-74.75"
-                    Point3="-29,-78.75" />
+                    Point1="-313.5,-141.044061302682"
+                    Point2="-317.5,-141.044061302682"
+                    Point3="-317.5,-145.044061302682" />
                   <mssgle:LineSegment
-                    End="-29,-142" />
+                    End="-317.5,-230" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="160,42"
+          Id="Package\DimensionMovie"
+          TopLeft="62,145" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="554.5,101.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-412.5,43.5"
+              Start="0,0"
+              End="-412.5,36">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.6666666666667" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.6666666666667"
+                    Point2="0,17.6666666666667"
+                    Point3="-4,17.6666666666667" />
+                  <mssgle:LineSegment
+                    End="-408.5,17.6666666666667" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-408.5,17.6666666666667"
+                    Point2="-412.5,17.6666666666667"
+                    Point3="-412.5,21.6666666666667" />
+                  <mssgle:LineSegment
+                    End="-412.5,36" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="181,42"
+          Id="Package\DimensionDistributor"
+          TopLeft="144,235" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="234.5,235">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="344.5,-133.5"
+              Start="0,0"
+              End="344.5,-126">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-62.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-62.75"
+                    Point2="0,-66.75"
+                    Point3="4,-66.75" />
+                  <mssgle:LineSegment
+                    End="340.5,-66.75" />
+                  <mssgle:CubicBezierSegment
+                    Point1="340.5,-66.75"
+                    Point2="344.5,-66.75"
+                    Point3="344.5,-70.75" />
+                  <mssgle:LineSegment
+                    End="344.5,-126" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
@@ -1030,6 +1833,158 @@
   </PipelineComponentMetadata>
   <PipelineComponentMetadata
     design-time-name="Package\Data Flow Task\Excel Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\DimensionMovie">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="157,42"
+          Id="Package\DimensionMovie\OLE DB Source"
+          TopLeft="242,91" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DimensionMovie\OLE DB Destination"
+          TopLeft="542,273" />
+        <EdgeLayout
+          Id="Package\DimensionMovie.Paths[OLE DB Source Output]"
+          TopLeft="320.5,133">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="310,140"
+              Start="0,0"
+              End="310,132.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,66" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,66"
+                    Point2="0,70"
+                    Point3="4,70" />
+                  <mssgle:LineSegment
+                    End="306,70" />
+                  <mssgle:CubicBezierSegment
+                    Point1="306,70"
+                    Point2="310,70"
+                    Point3="310,74" />
+                  <mssgle:LineSegment
+                    End="310,132.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DimensionMovie\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DimensionMovie\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\DimensionDistributor">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="157,42"
+          Id="Package\DimensionDistributor\OLE DB Source"
+          TopLeft="278,134" />
+        <NodeLayout
+          Size="177,42"
+          Id="Package\DimensionDistributor\OLE DB Destination"
+          TopLeft="628,376" />
+        <EdgeLayout
+          Id="Package\DimensionDistributor.Paths[OLE DB Source Output]"
+          TopLeft="356.5,176">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="360,200"
+              Start="0,0"
+              End="360,192.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,96" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,96"
+                    Point2="0,100"
+                    Point3="4,100" />
+                  <mssgle:LineSegment
+                    End="356,100" />
+                  <mssgle:CubicBezierSegment
+                    Point1="356,100"
+                    Point2="360,100"
+                    Point3="360,104" />
+                  <mssgle:LineSegment
+                    End="360,192.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\DimensionDistributor\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\DimensionDistributor\OLE DB Destination">
     <Properties>
       <Property>
         <Name>DataSourceViewID</Name>
